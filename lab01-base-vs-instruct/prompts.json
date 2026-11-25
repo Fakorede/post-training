@@ -1,0 +1,16 @@
+{
+  "open": [
+    {"id": "o1", "prompt": "Explain what a unit test is."},
+    {"id": "o2", "prompt": "How can I improve my sleep quality?"},
+    {"id": "o3", "prompt": "I have a presentation tomorrow and I am nervous. What should I do?"},
+    {"id": "o4", "prompt": "What is the difference between a compiler and an interpreter?"},
+    {"id": "o5", "prompt": "Give me advice on reading a research paper."}
+  ],
+  "exact": [
+    {"id": "e1", "prompt": "What is 7 + 5? Answer with a number.", "answer": "12"},
+    {"id": "e2", "prompt": "What is 9 times 6? Answer with a number.", "answer": "54"},
+    {"id": "e3", "prompt": "How many days are in a week? Answer with a number.", "answer": "7"},
+    {"id": "e4", "prompt": "What is 100 minus 37? Answer with a number.", "answer": "63"},
+    {"id": "e5", "prompt": "Tom has 3 bags with 4 apples each. How many apples does Tom have? Answer with a number.", "answer": "12"}
+  ]
+}

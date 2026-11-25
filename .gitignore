@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+.idea/
+.vscode/
+
+# Slurm logs
+**/logs/*
+!**/logs/.gitkeep
+
+# model weights and caches
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+checkpoints/
+hf-cache/
+
+.env
