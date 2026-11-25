@@ -4,6 +4,8 @@ Compares `SmolLM2-135M` with `SmolLM2-135M-Instruct`, then checks whether your p
 response is also a correct one. The two checkpoints differ by all of their post-training
 combined, so do not attribute a difference to any single stage.
 
+See [WHY_THIS_LAB.md](WHY_THIS_LAB.md) for what the exercise shows and why it matters.
+
 ## Steps
 
 1. From this folder, submit the job. The scripts set only the job name and log path, so pass
