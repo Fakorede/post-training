@@ -11,6 +11,8 @@ dependencies = [
     "trl>=1.16.0",
     "peft>=0.22.0",
     "datasets>=5.0.1",
+    # triton imports it, but torch 2.5.1 does not install it on Python 3.11
+    "setuptools>=84.2.1",
 ]
 
 [tool.uv]
