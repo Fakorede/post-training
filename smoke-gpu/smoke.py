@@ -9,7 +9,7 @@ import torch
 import transformers
 import trl
 from datasets import Dataset
-from peft import LoraConfig, PeftModel
+from peft import LoraConfig, PeftModel, get_peft_model_state_dict
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import SFTConfig, SFTTrainer
 
@@ -90,11 +90,13 @@ def main():
             print(f"peak training memory: {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB allocated, "
                   f"{torch.cuda.max_memory_reserved() / 2**30:.1f} GiB reserved")
 
-        model = trainer.model.eval()
+        # drop the trainer's mixed-precision wrapper so both forward passes run the same way as a reloaded model
+        model = trainer.accelerator.unwrap_model(trainer.model, keep_fp32_wrapper=False).eval()
         assert any(p.abs().sum() > 0 for n, p in model.named_parameters() if "lora_B" in n), "adapter did not update"
         inputs = tokenizer("Say hello.\n", return_tensors="pt").to(model.device)
         with torch.no_grad():
             before = model(**inputs).logits.float().cpu()
+        trained = {k: v.detach().cpu().clone() for k, v in get_peft_model_state_dict(model).items()}
         model.save_pretrained(f"{tmp}/adapter")
 
         del trainer, model
@@ -103,6 +105,9 @@ def main():
             torch.cuda.empty_cache()
 
         reloaded = PeftModel.from_pretrained(load_base(), f"{tmp}/adapter").eval()
+        loaded = get_peft_model_state_dict(reloaded)
+        assert trained.keys() == loaded.keys() and all(torch.equal(v, loaded[k].cpu()) for k, v in trained.items()), \
+            "reloaded adapter weights differ from the trained ones"
         with torch.no_grad():
             after = reloaded(**inputs).logits.float().cpu()
         diff = (before - after).abs().max().item()
